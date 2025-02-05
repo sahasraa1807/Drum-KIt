@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Drum Kit</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(to right, #222, #555);
+            color: #fff;
+        }
+
+        #drum-kit {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .key {
+            border: 2px solid #fff;
+            border-radius: 5px;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100px;
+            height: 100px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.07s ease;
+        }
+
+        .key.active {
+            transform: scale(1.1);
+            border-color: #ffc600;
+            box-shadow: 0 0 10px #ffc600;
+            color: #ffc600;
+        }
+
+        .key:active, .key:focus {
+            outline: none;
+            transform: scale(0.95);
+        }
+
+        @media (max-width: 600px) {
+            .key {
+                width: 80px;
+                height: 80px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="drum-kit">
+        <!-- Each div represents a drum key -->
+        <div class="key" data-key="A">
+            <span>A</span>
+            <audio id="A" src="https://s3.amazonaws.com/freecodecamp/drums/Cev_H2.mp3" data-key="A"></audio>
+
+        </div>
+        <div class="key" data-key="S">
+            <span>S</span>
+            <audio id="S" src="https://commondatastorage.googleapis.com/codeskulptor-demos/riceracer_assets/music/start.ogg" data-key="S"></audio>
+        </div>
+        <div class="key" data-key="D">
+            <span>D</span>
+            <audio id="D" src="https://commondatastorage.googleapis.com/codeskulptor-demos/pyman_assets/extralife.ogg" data-key="D"></audio>
+        </div>
+        <div class="key" data-key="F">
+            <span>F</span>
+            <audio id="F" src="https://commondatastorage.googleapis.com/codeskulptor-assets/jump.ogg" data-key="F"></audio>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript for playing sound
+        function playSound(key) {
+            const audio = document.querySelector(`audio[data-key="${key.toUpperCase()}"]`);
+            const keyElement = document.querySelector(`.key[data-key="${key.toUpperCase()}"]`);
+            if (keyElement) {
+                animateKey(keyElement);
+            }
+            if (!audio) return;
+            audio.currentTime = 0;
+            audio.play();
+
+            setTimeout(() => {
+                keyElement.classList.remove('active');
+            }, 100);
+        }
+
+        window.addEventListener('keydown', function(event) {
+            playSound(event.key);
+        });
+
+        const keys = document.querySelectorAll('.key');
+        keys.forEach(key => {
+            key.addEventListener('click', function() {
+                const keyAttribute = this.getAttribute('data-key');
+                playSound(keyAttribute);
+            });
+        });
+
+        function animateKey(key) {
+            key.animate([
+                { transform: 'scale(1)', backgroundColor: '#333' },
+                { transform: 'scale(1.1)', backgroundColor: '#ffc600' },
+                { transform: 'scale(1)', backgroundColor: '#333' }
+            ], {
+                duration: 100,
+                iterations: 1
+            });
+        }
+    </script>
+</body>
+</html>
